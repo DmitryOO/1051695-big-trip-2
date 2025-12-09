@@ -20,7 +20,7 @@ export default class BoardPresenter {
     const points = this.pointModel.getPoints();
     const destinations = this.pointModel.getDestinations();
     const offers = this.pointModel.getOffers();
-    console.log(this.pointModel.getPoints());
+    // console.log(this.pointModel.getPoints());
     render(new FilterView(), this.tripControls);
     render(new SortView(), this.tripEvents);
     render(this.pointListView, this.tripEvents);

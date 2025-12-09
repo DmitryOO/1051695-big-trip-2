@@ -4,7 +4,7 @@ import { getTimePeriod, humanizeTaskDueDate, DATE_FORMAT } from '../utils.js';
 import { dayjs } from 'dayjs';
 
 function createPointTemplate(point, destinations, offers) {
-  console.log(point);
+  // console.log(point);
   const { basePrice, isFavorite, dateFrom, dateTo, type } = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
