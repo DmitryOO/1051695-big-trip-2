@@ -3,8 +3,10 @@ import FilterView from '../view/filter-view.js';
 import PointView from '../view/point-view.js';
 import PointListView from '../view/point-list-view.js';
 import EventEditView from '../view/event-edit-view.js';
-import { render } from '../render.js';
+import NewPointView from '../view/new-point-view.js';
+import { render, RenderPosition } from '../render.js';
 import PointModel from '../model/point-model.js';
+// import { getDefaultPoint } from '../utils.js';
 
 export default class BoardPresenter {
 
@@ -20,14 +22,15 @@ export default class BoardPresenter {
     const points = this.pointModel.getPoints();
     const destinations = this.pointModel.getDestinations();
     const offers = this.pointModel.getOffers();
-    // console.log(this.pointModel.getPoints());
+
     render(new FilterView(), this.tripControls);
     render(new SortView(), this.tripEvents);
     render(this.pointListView, this.tripEvents);
-    render(new EventEditView(), this.pointListView.getElement());
-    console.log(points[0].basePrice);
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(points[0], destinations, offers), this.pointListView.getElement());
+    render(new NewPointView(points[0], destinations, offers), this.pointListView.getElement(), RenderPosition.AFTERBEGIN);
+    render(new EventEditView(points[1], destinations, offers), this.pointListView.getElement());
+
+    for (const point of points) {
+      render(new PointView (point, destinations, offers), this.pointListView.getElement());
     }
   }
 }

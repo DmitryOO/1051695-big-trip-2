@@ -5,7 +5,7 @@ export const destinations = [
     name: 'Chamonix',
     pictures: [
       {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
+        'src': 'https://loremflickr.com/248/152?random=10',
         'description': 'Chamonix parliament building'
       }
     ]
@@ -15,22 +15,22 @@ export const destinations = [
     id: 2,
     description: 'Geneva, is a beautiful city',
     name: 'Geneva',
-    pictures: [
-      {
-        'src': 'https://loremflickr.com/248/152?random=20',
-        'description': 'Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc..'
-      },
-      {
-        'src': 'https://loremflickr.com/248/152?random=10',
-        'description': 'Lconsectetur adipiscing elit.'
-      },
-    ]
+    pictures: []
   },
 
   {
     id: 3,
-    description: 'S purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis..',
+    description: 'Amsterdam purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis..',
     name: 'Amsterdam',
-    pictures: []
+    pictures: [
+      {
+        'src': 'https://loremflickr.com/248/152?random=112',
+        'description': 'Amsterdam lafhhI  Ihoj'
+      },
+      {
+        'src': 'https://loremflickr.com/248/152?random=10',
+        'description': 'Geneva Lconsectetur adipiscing elit.'
+      },
+    ]
   },
 ];

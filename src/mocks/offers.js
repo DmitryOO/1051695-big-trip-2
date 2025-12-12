@@ -4,8 +4,8 @@ export const offers = [
     offers: [
       {
         id: 1,
-        title: 'Upgrade to a business class',
-        price: 120
+        title: 'Upgrade to a business',
+        price: 300
       },
       {
         id: 2,
