@@ -3,7 +3,7 @@ import { humanizeTaskDueDate, DATE_FORMAT } from '../utils.js';
 
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-function createNewPointTemplate(point, destinations, offers, isNew = false) {
+function createNewPointTemplate(point, destinations, offers) {
   const { basePrice, dateFrom, dateTo, type } = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
@@ -11,7 +11,7 @@ function createNewPointTemplate(point, destinations, offers, isNew = false) {
   const pointId = point.id || 0;
 
   const createButtonsTemplate = () => {
-    if (isNew) {
+    if (pointId) {
       return `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>`;
     }
@@ -27,24 +27,18 @@ function createNewPointTemplate(point, destinations, offers, isNew = false) {
       return ('');
     }
 
-    if (isNew) {
-      return ` <section class="event__section  event__section--destination">
+    return ` <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
 
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${destination.pictures.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
+          ${destination.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
           </div>
         </div>
       </section>`;
-    }
 
-    return ` <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-        </section>`;
   };
 
   const createOffersTemplate = (offersArray) => {
@@ -82,14 +76,14 @@ function createNewPointTemplate(point, destinations, offers, isNew = false) {
               <legend class="visually-hidden">Event type</legend>
               ${/*(offers.map((offer) => `
                 <div class="event__type-${offer.type}">
-                  <input id="event-type-${offer.type}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
+                  <input id="event-type-${offer.type}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${ offer.type === point.type ? 'checked' : ''}>
                   <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-${pointId}">${offer.type.charAt(0).toUpperCase() + offer.type.slice(1)}</label>
                 </div>`)).join('')*/''}
 
               ${(POINT_TYPES.map((el) => `
                 <div class="event__type-${el}">
-                  <input id="event-type-${el}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}">
-                  <label class="event__type-label  event__type-label--${el}" for="event-type-${el}">${el.slice(0,1).toUpperCase() + el.slice(1)}</label>
+                  <input id="event-type-${el}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${ el === point.type ? 'checked' : ''}>
+                  <label class="event__type-label  event__type-label--${el}" for="event-type-${el}" >${el.slice(0, 1).toUpperCase() + el.slice(1)}</label>
                 </div>`)).join('')}
             </fieldset>
             </fieldset>
@@ -123,25 +117,27 @@ function createNewPointTemplate(point, destinations, offers, isNew = false) {
         </div>
         ${createButtonsTemplate()}
       </header>
-      <section class="event__details">
-        ${createOffersTemplate(pointOffers)}
-        ${createDestinationTemplate(pointDestination)}
-      </section>
+      ${pointDestination?.name && pointDestination.description ? `
+        <section class="event__details">
+          ${createOffersTemplate(pointOffers)}
+          ${createDestinationTemplate(pointDestination)}
+        </section>
+      ` : ''}
+
     </form>
   </li>`;
 }
 
 export default class EditPointView {
 
-  constructor(point, destinations, offers, isNew) {
+  constructor(point, destinations, offers) {
     this.point = point;
     this.destinations = destinations;
     this.offers = offers;
-    this.isNew = isNew;
   }
 
   getTemplate() {
-    return createNewPointTemplate(this.point, this.destinations, this.offers, this.isNew);
+    return createNewPointTemplate(this.point, this.destinations, this.offers);
   }
 
 

@@ -1,5 +1,5 @@
 import SortView from '../view/sort-view.js';
-import FilterView from '../view/filter-view.js';
+
 import PointView from '../view/point-view.js';
 import PointListView from '../view/point-list-view.js';
 import EditPointView from '../view/edit-point-view.js';
@@ -10,8 +10,7 @@ import { getDefaultPoint } from '../utils.js';
 
 export default class BoardPresenter {
 
-  constructor({ tripControls, tripEvents }) {
-    this.tripControls = tripControls;
+  constructor(tripEvents) {
     this.tripEvents = tripEvents;
     this.pointModel = new PointModel();
     this.pointListView = new PointListView();
@@ -23,10 +22,10 @@ export default class BoardPresenter {
     const destinations = this.pointModel.getDestinations() || [];
     const offers = this.pointModel.getOffers();
 
-    render(new FilterView(), this.tripControls);
+
     render(new SortView(), this.tripEvents);
     render(this.pointListView, this.tripEvents);
-    render(new EditPointView(getDefaultPoint(), destinations, offers, true), this.pointListView.getElement(), RenderPosition.AFTERBEGIN);
+    render(new EditPointView(getDefaultPoint(), destinations, offers), this.pointListView.getElement(), RenderPosition.AFTERBEGIN);
     render(new EditPointView(points[3], destinations, offers), this.pointListView.getElement());
 
     for (const point of points) {
