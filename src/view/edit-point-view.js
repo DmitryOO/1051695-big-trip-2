@@ -52,8 +52,8 @@ function createNewPointTemplate(point, destinations, offers) {
         <div class="event__available-offers">
         ${offersArray.map((offer) => (`
           <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-${offer.title}"  ${pointOffers.map((off) => off.id).includes(offer.id) ? 'checked' : ''}>
-            <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointId}-${offer.id}" type="checkbox" name="event-${offer.title}"  ${pointOffers.map((off) => off.id).includes(offer.id) ? 'checked' : ''}>
+            <label class="event__offer-label" for="event-offer-${pointId}-${offer.id}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -83,8 +83,8 @@ function createNewPointTemplate(point, destinations, offers) {
 
                 ${(POINT_TYPES.map((el) => `
                   <div class="event__type-${el}">
-                    <input id="event-type-${el}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${el === point.type ? 'checked' : ''}>
-                    <label class="event__type-label  event__type-label--${el}" for="event-type-${el}" >${el.slice(0, 1).toUpperCase() + el.slice(1)}</label>
+                    <input id="event-type-${el}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${el === point.type ? 'checked' : ''}>
+                    <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-${pointId}" >${el.slice(0, 1).toUpperCase() + el.slice(1)}</label>
                   </div>`)).join('')}
               </fieldset>
               </fieldset>
