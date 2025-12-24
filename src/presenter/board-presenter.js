@@ -3,13 +3,12 @@ import SortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
 import PointListView from '../view/point-list-view.js';
 import EditPointView from '../view/edit-point-view.js';
-import { render, /*RenderPosition*/ } from '../framework/render.js';
-// import { getDefaultPoint } from '../utils.js';
+import { render, RenderPosition, replace, remove } from '../framework/render.js';
+import { getDefaultPoint } from '../utils.js';
 
 
 export default class BoardPresenter {
 
-  #editPointView = new EditPointView();
   #pointListView = new PointListView();
   #pointModel = null;
   #tripEvents = null;
@@ -36,10 +35,26 @@ export default class BoardPresenter {
   }
 
   #renderEvent(point, destinations, offers) {
-    const eventComponent = new PointView(point, destinations, offers);
-    // const editPointComponent = new EditPointView(point, destinations, offers);
+    const onRollupBtnFormClick = () => {
+      replacePointToForm();
+      // document.removeEventListener('keydown', escKeyDownHandler);
+    };
+    const onRollupBtnPointClick = () => {
+      replaceFormToPoint();
+      // document.removeEventListener('keydown', escKeyDownHandler);
+    };
 
-    render(eventComponent, this.#pointListView.element);
+    const pointComponent = new PointView(point, destinations, offers, onRollupBtnPointClick);
+    const editPointComponent = new EditPointView(point, destinations, offers, onRollupBtnFormClick);
+
+    function replacePointToForm() {
+      replace(pointComponent, editPointComponent);
+    }
+    function replaceFormToPoint() {
+      replace(editPointComponent, pointComponent);
+    }
+
+    render(editPointComponent, this.#pointListView.element);
 
   }
 }
