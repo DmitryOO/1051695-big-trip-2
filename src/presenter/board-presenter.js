@@ -1,10 +1,10 @@
 import SortView from '../view/sort-view.js';
-
 import PointView from '../view/point-view.js';
 import PointListView from '../view/point-list-view.js';
 import EditPointView from '../view/edit-point-view.js';
-import { render, RenderPosition, replace, remove } from '../framework/render.js';
-import { getDefaultPoint } from '../utils.js';
+import { render, replace } from '../framework/render.js';
+// import { RenderPosition, remove } from '../framework/render.js';
+// import { getDefaultPoint } from '../utils.js';
 
 
 export default class BoardPresenter {
@@ -30,22 +30,30 @@ export default class BoardPresenter {
     // render(new EditPointView(points[3], destinations, offers), this.#pointListView.element);
 
     for (const point of points) {
-      this.#renderEvent(point, destinations, offers);
+      this.#renderPoint(point, destinations, offers);
     }
   }
 
-  #renderEvent(point, destinations, offers) {
+  #renderPoint(point, destinations, offers) {
+    const onEscKeydown = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replacePointToForm();
+        document.removeEventListener('keydown', onEscKeydown);
+      }
+    };
+
     const onRollupBtnFormClick = () => {
       replacePointToForm();
-      // document.removeEventListener('keydown', escKeyDownHandler);
+      document.removeEventListener('keydown', onEscKeydown);
     };
     const onRollupBtnPointClick = () => {
       replaceFormToPoint();
-      // document.removeEventListener('keydown', escKeyDownHandler);
+      document.addEventListener('keydown', onEscKeydown);
     };
 
     const pointComponent = new PointView(point, destinations, offers, onRollupBtnPointClick);
-    const editPointComponent = new EditPointView(point, destinations, offers, onRollupBtnFormClick);
+    const editPointComponent = new EditPointView(point, destinations, offers, onRollupBtnFormClick, onRollupBtnFormClick);
 
     function replacePointToForm() {
       replace(pointComponent, editPointComponent);
@@ -54,7 +62,7 @@ export default class BoardPresenter {
       replace(editPointComponent, pointComponent);
     }
 
-    render(editPointComponent, this.#pointListView.element);
+    render(pointComponent, this.#pointListView.element);
 
   }
 }
