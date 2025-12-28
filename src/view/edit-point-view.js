@@ -163,9 +163,4 @@ export default class EditPointView extends AbstractView {
     evt.preventDefault();
     this.#handleRollupBtnClick();
   };
-
-
-  // get rollupBtn() {
-  //   return createNewPointTemplate(this.#point, this.#destinations, this.#offers).querySelector('.event__rollup-btn');
-  // }
 }

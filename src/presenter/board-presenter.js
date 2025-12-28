@@ -34,31 +34,24 @@ export default class BoardPresenter {
   }
 
   #renderPoint(point, destinations, offers) {
-    const onEscKeydown = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replacePointToForm();
-        document.removeEventListener('keydown', onEscKeydown);
-      }
-    };
 
-    const onRollupBtnFormClick = () => {
-      replacePointToForm();
-      document.removeEventListener('keydown', onEscKeydown);
-    };
-    const onRollupBtnPointClick = () => {
-      replaceFormToPoint();
-      document.addEventListener('keydown', onEscKeydown);
-    };
 
     const pointComponent = new PointView(point, destinations, offers, onRollupBtnPointClick);
     const editPointComponent = new EditPointView(point, destinations, offers, onRollupBtnFormClick, onRollupBtnFormClick);
-
-    function replacePointToForm() {
+    const onEscKeydown = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replace(pointComponent, editPointComponent);
+        document.removeEventListener('keydown', onEscKeydown);
+      }
+    };
+    function onRollupBtnFormClick () {
       replace(pointComponent, editPointComponent);
+      document.removeEventListener('keydown', onEscKeydown);
     }
-    function replaceFormToPoint() {
+    function onRollupBtnPointClick () {
       replace(editPointComponent, pointComponent);
+      document.addEventListener('keydown', onEscKeydown);
     }
 
     render(pointComponent, this.#pointListView.element);
