@@ -1,5 +1,5 @@
 
-import { humanizeTaskDueDate, DateFormat } from '../utils.js';
+import { humanizeTaskDueDate, DateFormat } from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
