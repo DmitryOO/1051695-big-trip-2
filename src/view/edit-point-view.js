@@ -1,8 +1,7 @@
 
-import { humanizeTaskDueDate, DateFormat } from '../utils/utils.js';
+import { humanizeTaskDueDate} from '../utils/utils.js';
+import { DateFormat, POINT_TYPES } from '../consts.js';
 import AbstractView from '../framework/view/abstract-view.js';
-
-const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 function createNewPointTemplate(point, destinations, offers) {
   const { basePrice, dateFrom, dateTo, type } = point;
