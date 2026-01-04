@@ -19,7 +19,7 @@ export default class PointPresenter {
     this.#destinations = destinations;
     this.#offers = offers;
     this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onRollupBtnPointClick);
-    this.#editPointComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onRollupBtnFormClick, this.#onRollupBtnFormClick);
+    this.#editPointComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onRollupBtnFormClick, this.#onSaveBtnClick);
 
     render(this.#pointComponent, this.#pointsContainer.element);
   }
@@ -42,4 +42,8 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#onEscKeydown);
   };
 
+  #onSaveBtnClick = () => {
+    replace(this.#pointComponent, this.#editPointComponent);
+    document.removeEventListener('keydown', this.#onEscKeydown);
+  };
 }
