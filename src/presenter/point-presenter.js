@@ -79,6 +79,7 @@ export default class PointPresenter {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       replace(this.#pointComponent, this.#editPointComponent);
+      this.#isOpenEdit = false;
       document.removeEventListener('keydown', this.#onEscKeydown);
     }
   };
