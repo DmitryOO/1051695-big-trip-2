@@ -3,11 +3,10 @@ import { humanizeTaskDueDate } from '../utils/utils.js';
 import { DateFormat, POINT_TYPES } from '../consts.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createNewPointTemplate(point, destinations = [], offers = []) {
+function createNewPointTemplate(point, destination, offers = []) {
   const { basePrice, dateFrom, dateTo, type } = point;
-  const typeOffers = offers.find((offer) => offer.type === point.type)?.offers || [];
-  const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  const pointDestination = destinations.find((dest) => point.destination === dest.id);
+  const pointOffers = offers;
+  const pointDestination = destination;
   const pointId = point.id || 0;
 
   const createButtonsTemplate = () => {
@@ -24,18 +23,18 @@ function createNewPointTemplate(point, destinations = [], offers = []) {
       </button>`;
   };
 
-  const createDestinationTemplate = (destination) => {
-    if (!destination || destination.id === 0 || destination.description === '' || !destination.description) {
+  const createDestinationTemplate = (dest) => {
+    if (!dest || dest.id === 0 || dest.description === '' || !dest.description) {
       return ('');
     }
 
     return `
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
+        <p class="event__destination-description">${dest.description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${destination.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
+          ${dest.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
           </div>
         </div>
       </section>`;
@@ -97,7 +96,7 @@ function createNewPointTemplate(point, destinations = [], offers = []) {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination ? pointDestination.name : ''}" list="destination-list-${pointId}">
             <datalist id="destination-list-${pointId}">
-            ${destinations.map((destination) => `<option value="${destination.name}"></option>`).join('')}
+            ${`<option value="${destination.name}"></option>`}
             </datalist>
           </div>
 
@@ -130,35 +129,35 @@ function createNewPointTemplate(point, destinations = [], offers = []) {
 
 export default class EditPointView extends AbstractView {
   #point = null;
-  #destinations = null;
+  #destination = null;
   #offers = null;
   #handleRollupBtnClick = null;
   #handleFormSubmit = null;
-  constructor(point, destinations, offers, onRollupBtnClick, onFormSubmit) {
+  constructor({point, destination, offers, onRollupBtnFormClick, onSaveBtnClick}) {
     super();
     this.#point = point;
-    this.#destinations = destinations;
+    this.#destination = destination;
     this.#offers = offers;
-    this.#handleRollupBtnClick = onRollupBtnClick;
-    this.#handleFormSubmit = onFormSubmit;
+    this.#handleRollupBtnClick = onRollupBtnFormClick;
+    this.#handleFormSubmit = onSaveBtnClick;
 
     if (this.element.querySelector('.event__rollup-btn')) {
       this.element.querySelector('.event__rollup-btn')
-        .addEventListener('click', this.#RollupBtnHandler);
+        .addEventListener('click', this.#rollupBtnHandler);
     }
-    this.element.querySelector('form').addEventListener('submit', this.#FormSubmitHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
-    return createNewPointTemplate(this.#point, this.#destinations, this.#offers);
+    return createNewPointTemplate(this.#point, this.#destination, this.#offers);
   }
 
-  #RollupBtnHandler = (evt) => {
+  #rollupBtnHandler = (evt) => {
     evt.preventDefault();
     this.#handleRollupBtnClick();
   };
 
-  #FormSubmitHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
   };

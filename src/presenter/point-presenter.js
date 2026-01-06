@@ -7,35 +7,56 @@ export default class PointPresenter {
   #editPointComponent = null;
   #pointsContainer = null;
   #point = null;
+  #currentDestinations = null;
+  #currentOffers = null;
   #destinations = null;
   #offers = null;
-
-  constructor(pointsContainer) {
+  #onClickFavoriteButton = null;
+  #onClickFormOpen = null;
+  #isOpenEdit = false;
+  constructor({ pointsContainer, destinations, offers, onClickFavoriteButton, onFormOpen }) {
     this.#pointsContainer = pointsContainer;
-  }
-
-  init(point, destinations, offers) {
-    this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#onClickFavoriteButton = onClickFavoriteButton;
+    this.#onClickFormOpen = onFormOpen;
+  }
+
+  init(point) {
+    this.#point = point;
+    this.#currentDestinations = this.#destinations.find((dest) => point.destination === dest.id);
+    this.#currentOffers = this.#offers.find((offer) => offer.type === point.type)?.offers.filter((typeOffer) => point.offers.includes(typeOffer.id));
 
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
 
 
-    this.#pointComponent = new PointView(this.#point, this.#destinations, this.#offers, this.#onRollupBtnPointClick);
-    this.#editPointComponent = new EditPointView(this.#point, this.#destinations, this.#offers, this.#onRollupBtnFormClick, this.#onSaveBtnClick);
+    this.#pointComponent = new PointView({
+      point: this.#point,
+      destination: this.#currentDestinations,
+      offers: this.#currentOffers,
+      onRollupBtnClick: this.#onRollupBtnPointClick,
+      onFavoriteBtnClick: this.#onToggleFavoriteState,
+    });
+
+    this.#editPointComponent = new EditPointView({
+      point: this.#point,
+      destination: this.#currentDestinations,
+      offers: this.#currentOffers,
+      onRollupBtnFormClick: this.#onRollupBtnFormClick,
+      onSaveBtnClick: this.#onSaveBtnClick
+    });
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this.#pointComponent, this.#pointsContainer.element);
       return;
     }
 
-    if (this.#pointsContainer.contains(prevPointComponent.element)) {
+    if (this.#pointsContainer.element.contains(prevPointComponent.element)) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#pointsContainer.contains(prevEditPointComponent.element)) {
+    if (this.#pointsContainer.element.contains(prevEditPointComponent.element)) {
       replace(this.#editPointComponent, prevEditPointComponent);
     }
 
@@ -43,10 +64,15 @@ export default class PointPresenter {
     remove(prevEditPointComponent);
   }
 
-
   destroy() {
     remove(this.#pointComponent);
     remove(this.#editPointComponent);
+  }
+
+  reset() {
+    if (this.#isOpenEdit) {
+      this.#onRollupBtnFormClick();
+    }
   }
 
   #onEscKeydown = (evt) => {
@@ -60,9 +86,13 @@ export default class PointPresenter {
   #onRollupBtnFormClick = () => {
     replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#onEscKeydown);
+    this.#isOpenEdit = false;
   };
 
   #onRollupBtnPointClick = () => {
+
+    this.#onClickFormOpen();
+    this.#isOpenEdit = true;
     replace(this.#editPointComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#onEscKeydown);
   };
@@ -70,5 +100,11 @@ export default class PointPresenter {
   #onSaveBtnClick = () => {
     replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#onEscKeydown);
+    this.#isOpenEdit = false;
   };
+
+  #onToggleFavoriteState = () => {
+    this.#onClickFavoriteButton({ ...this.#point, isFavorite: !this.#point.isFavorite });
+  };
+
 }

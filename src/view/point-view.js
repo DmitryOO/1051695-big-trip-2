@@ -5,11 +5,10 @@ import { DateFormat } from '../consts.js';
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createPointTemplate(point, destinations = [], offers = []) {
+function createPointTemplate(point, destination, offers = []) {
   const { basePrice, isFavorite, dateFrom, dateTo, type } = point;
-  const typeOffers = offers.find((offer) => offer.type === point.type)?.offers || [];
-  const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  const pointDestination = destinations.find((dest) => point.destination === dest.id);
+  const pointOffers = offers;
+  const pointDestination = destination;
   const favoriteActiveClass = isFavorite ? ' event__favorite-btn--active' : '';
 
   return `<li class="trip-events__item">
@@ -54,27 +53,37 @@ function createPointTemplate(point, destinations = [], offers = []) {
 
 export default class PointView extends AbstractView {
   #point = null;
-  #destinations = null;
+  #destination = null;
   #offers = null;
   #handleRollupBtnClick = null;
+  #handleFavoriteBtnClick = null;
 
-  constructor(point, destinations, offers, onRollupBtnClick) {
+  constructor({ point, destination, offers, onRollupBtnClick, onFavoriteBtnClick }) {
     super();
     this.#point = point;
-    this.#destinations = destinations;
+    this.#destination = destination;
     this.#offers = offers;
     this.#handleRollupBtnClick = onRollupBtnClick;
+    this.#handleFavoriteBtnClick = onFavoriteBtnClick;
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#RollupBtnHandler);
+      .addEventListener('click', this.#rollupBtnHandler);
+    this.element.querySelector('.event__favorite-btn')
+      .addEventListener('click', this.#favoriteBtnHandler);
   }
 
   get template() {
-    return createPointTemplate(this.#point, this.#destinations, this.#offers);
+    return createPointTemplate(this.#point, this.#destination, this.#offers);
   }
 
 
-  #RollupBtnHandler = (evt) => {
+  #rollupBtnHandler = (evt) => {
     evt.preventDefault();
     this.#handleRollupBtnClick();
+  };
+
+  #favoriteBtnHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteBtnClick();
+    // this.element.querySelector('.event__favorite-btn').classList.toggle('event__favorite-btn--active');
   };
 }
