@@ -24,8 +24,6 @@ export default class BoardPresenter {
   }
 
   init() {
-
-
     if (this.#points.length) {
       render(new SortView(), this.#tripEvents);
       render(this.#pointListView, this.#tripEvents);

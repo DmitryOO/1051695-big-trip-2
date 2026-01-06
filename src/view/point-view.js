@@ -84,6 +84,5 @@ export default class PointView extends AbstractView {
   #favoriteBtnHandler = (evt) => {
     evt.preventDefault();
     this.#handleFavoriteBtnClick();
-    // this.element.querySelector('.event__favorite-btn').classList.toggle('event__favorite-btn--active');
   };
 }
