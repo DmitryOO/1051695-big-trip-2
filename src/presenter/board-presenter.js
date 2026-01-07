@@ -5,7 +5,8 @@ import PointPresenter from './point-presenter.js';
 import { RenderPosition } from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 // import { getDefaultPoint } from '../utils/utils.js';
-import { updatePoint, sortByPrice, sortByTime, sortByDate } from '../utils/utils.js';
+import { updatePoint } from '../utils/utils.js';
+import { sortByPrice, sortByTime, sortByDate } from '../utils/sort-utils.js';
 import { SortType } from '../consts.js';
 
 export default class BoardPresenter {
@@ -56,7 +57,6 @@ export default class BoardPresenter {
     pointPresenter.init(point);
   }
 
-
   #handlePointChange = (updatedPoint) => {
     this.#points = updatePoint(this.#points, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
@@ -75,6 +75,7 @@ export default class BoardPresenter {
     this.#renderPoints(this.#points);
     this.#currentSortType = sortType;
   };
+
 
   #sortPoints = (sortType) => {
     switch (sortType) {

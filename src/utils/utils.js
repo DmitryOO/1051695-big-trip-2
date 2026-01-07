@@ -39,16 +39,5 @@ function updatePoint(points, updatedPoint) {
   return points.map((point) => point.id === updatedPoint.id ? updatedPoint : point);
 }
 
-function sortByPrice(point1, point2) {
-  return point2.basePrice - point1.basePrice;
-}
 
-function sortByTime(point1, point2) {
-  return dayjs(point2.dateTo).diff(dayjs(point2.dateFrom)) - dayjs(point1.dateTo).diff(dayjs(point1.dateFrom));
-}
-
-function sortByDate(point1, point2) {
-  return dayjs(point1.dateFrom).diff(dayjs(point2.dateFrom));
-}
-
-export { getRandomArrayElement, humanizeTaskDueDate, getTimePeriod, getDefaultPoint, updatePoint, sortByPrice, sortByTime, sortByDate };
+export { getRandomArrayElement, humanizeTaskDueDate, getTimePeriod, getDefaultPoint, updatePoint };
