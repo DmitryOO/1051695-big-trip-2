@@ -1,8 +1,7 @@
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
-import { render, remove } from '../framework/render.js';
+import { render, remove, RenderPosition } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
-import { RenderPosition } from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 // import { getDefaultPoint } from '../utils/utils.js';
 import { updatePoint } from '../utils/utils.js';
