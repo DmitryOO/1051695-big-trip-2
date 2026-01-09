@@ -1,7 +1,7 @@
 
 import { humanizeTaskDueDate } from '../utils/utils.js';
 import { DateFormat, POINT_TYPES } from '../consts.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createNewPointTemplate(point, destinations, offers = []) {
   const { basePrice, dateFrom, dateTo, type } = point;
@@ -128,13 +128,13 @@ function createNewPointTemplate(point, destinations, offers = []) {
     </li>`;
 }
 
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends AbstractStatefulView {
   #point = null;
   #destinations = null;
   #offers = null;
   #handleRollupBtnClick = null;
   #handleFormSubmit = null;
-  constructor({point, destinations, offers, onRollupBtnFormClick, onSaveBtnClick}) {
+  constructor({ point, destinations, offers, onRollupBtnFormClick, onSaveBtnClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
