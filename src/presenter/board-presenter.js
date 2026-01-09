@@ -58,6 +58,7 @@ export default class BoardPresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#points = updatePoint(this.#points, updatedPoint);
+    this.#defaultSortPoints = updatePoint(this.#defaultSortPoints,updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
@@ -79,7 +80,7 @@ export default class BoardPresenter {
   #sortPoints = (sortType) => {
     switch (sortType) {
       case 'default':
-        this.#points.sort(sortByDate);
+        this.#points = [...this.#defaultSortPoints];
         break;
       case 'time':
         this.#points.sort(sortByTime);
