@@ -49,5 +49,26 @@ export const points = [
     offers: [4,2],
     type: 'flight',
   },
+  {
+    id: 6,
+    basePrice: 250,
+    dateFrom: '2019-08-15T09:58:56.845Z',
+    dateTo: '2019-08-15T14:24:13.375Z',
+    destination: 4,
+    isFavorite: false,
+    offers: [1,2],
+    type: 'train',
+  },
+  {
+    id: 7,
+    basePrice: 333,
+    dateFrom: '2019-08-15T16:58:56.845Z',
+    dateTo: '2019-08-15T17:53:13.375Z',
+    destination: 4,
+    isFavorite: false,
+    offers: [1,2,4],
+    type: 'taxi',
+  },
+
 ];
 
