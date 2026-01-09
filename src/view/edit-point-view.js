@@ -1,12 +1,13 @@
 
 import { humanizeTaskDueDate } from '../utils/utils.js';
 import { DateFormat, POINT_TYPES } from '../consts.js';
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-function createNewPointTemplate(point, destination, offers = []) {
+function createNewPointTemplate(point, destinations, offers = []) {
   const { basePrice, dateFrom, dateTo, type } = point;
-  const pointOffers = offers;
-  const pointDestination = destination;
+  const typeOffers = offers.find((offer) => offer.type === point.type).offers;
+  const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
+  const pointDestination = destinations.find((dest) => point.destination === dest.id);
   const pointId = point.id || 0;
 
   const createButtonsTemplate = () => {
@@ -78,7 +79,7 @@ function createNewPointTemplate(point, destination, offers = []) {
                   <div class="event__type-${offer.type}">
                     <input id="event-type-${offer.type}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${ offer.type === point.type ? 'checked' : ''}>
                     <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-${pointId}">${offer.type.charAt(0).toUpperCase() + offer.type.slice(1)}</label>
-                  </div>`)).join('')*/''} ;
+                  </div>`)).join('')*/''}
 
                 ${(POINT_TYPES.map((el) => `
                   <div class="event__type-${el}">
@@ -94,9 +95,9 @@ function createNewPointTemplate(point, destination, offers = []) {
             <label class="event__label  event__type-output" for="event-destination-${pointId}">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-${pointId}">
+            <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination ? pointDestination.name : ''}" list="destination-list-${pointId}">
             <datalist id="destination-list-${pointId}">
-            ${`<option value="${destination.name}"></option>`}
+            ${`<option value="${pointDestination.name}"></option>`}
             </datalist>
           </div>
 
@@ -127,16 +128,16 @@ function createNewPointTemplate(point, destination, offers = []) {
     </li>`;
 }
 
-export default class EditPointView extends AbstractStatefulView {
+export default class EditPointView extends AbstractView {
   #point = null;
-  #destination = null;
+  #destinations = null;
   #offers = null;
   #handleRollupBtnClick = null;
   #handleFormSubmit = null;
-  constructor({point, destination, offers, onRollupBtnFormClick, onSaveBtnClick}) {
+  constructor({point, destinations, offers, onRollupBtnFormClick, onSaveBtnClick}) {
     super();
     this.#point = point;
-    this.#destination = destination;
+    this.#destinations = destinations;
     this.#offers = offers;
     this.#handleRollupBtnClick = onRollupBtnFormClick;
     this.#handleFormSubmit = onSaveBtnClick;
@@ -149,7 +150,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createNewPointTemplate(this.#point, this.#destination, this.#offers);
+    return createNewPointTemplate(this.#point, this.#destinations, this.#offers);
   }
 
   #rollupBtnHandler = (evt) => {
