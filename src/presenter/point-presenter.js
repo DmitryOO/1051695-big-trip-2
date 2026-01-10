@@ -7,8 +7,6 @@ export default class PointPresenter {
   #editPointComponent = null;
   #pointsContainer = null;
   #point = null;
-  #currentDestination = null;
-  #currentOffers = null;
   #destinations = null;
   #offers = null;
   #onClickFavoriteButton = null;

@@ -5,7 +5,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createNewPointTemplate(point, destinations, offers = []) {
   const { basePrice, dateFrom, dateTo, type } = point;
-  const typeOffers = offers.find((offer) => offer.type === point.type).offers;
+  const typeOffers = offers.find((offer) => offer.type === point.type)?.offers || [];
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const pointDestination = destinations.find((dest) => point.destination === dest.id);
   const pointId = point.id || 0;
