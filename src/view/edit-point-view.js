@@ -152,7 +152,6 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   resetPoint = (point) => this.updateElement(point);
-
   _restoreHandlers() {
     this.#setHandlers();
   }
@@ -228,6 +227,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    this.updateElement(EditPointView.parseStateToPoint(this._state));
     this.#handleFormSubmit();
   };
 
