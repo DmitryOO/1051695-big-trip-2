@@ -73,6 +73,7 @@ export default class PointPresenter {
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#editPointComponent.resetPoint(this.#point);
       replace(this.#pointComponent, this.#editPointComponent);
       this.#isOpenEdit = false;
       document.removeEventListener('keydown', this.#onEscKeydown);
@@ -80,6 +81,7 @@ export default class PointPresenter {
   };
 
   #onRollupBtnFormClick = () => {
+    this.#editPointComponent.resetPoint(this.#point);
     replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#onEscKeydown);
     this.#isOpenEdit = false;

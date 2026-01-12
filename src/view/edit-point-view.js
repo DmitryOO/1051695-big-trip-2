@@ -151,6 +151,8 @@ export default class EditPointView extends AbstractStatefulView {
     return createNewPointTemplate(this._state, this.#destinations, this.#offers);
   }
 
+  resetPoint = (point) => this.updateElement(point);
+
   _restoreHandlers() {
     this.#setHandlers();
   }
