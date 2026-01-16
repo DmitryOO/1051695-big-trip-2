@@ -187,7 +187,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    const newPrice = +evt.target.value;
+    const newPrice = (Number(evt.target.value) >= 0 || isNaN(Number(evt.target.value))) ? Number(evt.target.value) : this._state.basePrice;
     this.updateElement({
       ...this._state,
       basePrice: newPrice,
@@ -209,7 +209,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     const { checked, dataset } = evt.target;
-    const offerId = +dataset.offerId;
+    const offerId = Number(dataset.offerId);
     const oldOffers = this._state.offers ?? [];
 
     let newOffers;
