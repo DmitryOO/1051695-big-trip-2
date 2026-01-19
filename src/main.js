@@ -7,8 +7,8 @@ import { generateFilter } from './mocks/filter.js';
 
 const filtersContainer = document.querySelector('.trip-controls__filters');
 const pointsContainer = document.querySelector('.trip-events');
-const pointModel = new PointModel();
-const boardPresenter = new BoardPresenter(pointsContainer, pointModel);
+const pointsModel = new PointModel();
+const boardPresenter = new BoardPresenter(filtersContainer,pointsContainer, pointsModel);
 
 render(new FilterView(generateFilter(filter)), filtersContainer);
 

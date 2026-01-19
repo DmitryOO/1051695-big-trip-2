@@ -1,15 +1,8 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { points } from '../mocks/points';
-
+import { FilterType } from '../consts';
 dayjs.extend(utc);
-
-const FilterType = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past',
-};
 
 const filter = {
   [FilterType.EVERYTHING]: points.filter((point) => point),

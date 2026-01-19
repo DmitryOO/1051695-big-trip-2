@@ -21,10 +21,29 @@ const EmptyMessage = {
   PAST: 'There are no past events now',
 };
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
 const SortType = {
   DEFAULT: 'default',
   TIME: 'time',
   PRICE: 'price',
 };
 
-export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, POINT_TYPES, EmptyMessage, SortType};
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, POINT_TYPES, EmptyMessage, SortType, FilterType, UserAction, UpdateType};
