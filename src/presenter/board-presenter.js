@@ -14,19 +14,31 @@ export default class BoardPresenter {
   #tripEvents = null;
   #filterModel = null;
   #pointsModel = null;
-  #destinations = null;
   #pointPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
 
 
-  constructor(tripEventsContainer, pointModel, filterModel) {
+  constructor({ pointsContainer, pointsModel, filterModel }) {
     this.#filterModel = filterModel;
-    this.#tripEvents = tripEventsContainer;
-    this.#pointsModel = pointModel;
+    this.#tripEvents = pointsContainer;
+    this.#pointsModel = pointsModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[this.#filterType](points);
+    switch (this.#currentSortType) {
+      case SortType.TIME:
+        return filteredPoints.sort(sortByTime);
+      case SortType.PRICE:
+        return filteredPoints.sort(sortByPrice);
+    }
+    return filteredPoints.sort(sortByDate);
   }
 
   init() {
@@ -68,19 +80,6 @@ export default class BoardPresenter {
         break;
     }
   };
-
-  get points() {
-    this.#filterType = this.#filterModel.filter;
-    const points = this.#pointsModel.points;
-    const filteredPoints = filter[this.#filterType](points);
-    switch (this.#currentSortType) {
-      case SortType.TIME:
-        return filteredPoints.sort(sortByTime);
-      case SortType.PRICE:
-        return filteredPoints.sort(sortByPrice);
-    }
-    return filteredPoints.sort(sortByDate);
-  }
 
 
   #renderSort() {
