@@ -4,10 +4,9 @@ import { render, remove, RenderPosition } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import { filter } from '../utils/filter-utils.js';
-import { FilterType } from '../consts.js';
 
 import { sortByPrice, sortByTime, sortByDate } from '../utils/sort-utils.js';
-import { SortType, UserAction, UpdateType } from '../consts.js';
+import { SortType, UserAction, UpdateType, FilterType } from '../consts.js';
 export default class BoardPresenter {
 
   #pointListView = new PointListView();
@@ -15,9 +14,10 @@ export default class BoardPresenter {
   #filterModel = null;
   #pointsModel = null;
   #pointPresenters = new Map();
+  #listEmptyComponent = {};
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
-
+  #sortComponent = null;
 
   constructor({ pointsContainer, pointsModel, filterModel }) {
     this.#filterModel = filterModel;
@@ -26,6 +26,8 @@ export default class BoardPresenter {
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), this.#tripEvents);
+    this.#sortComponent = new SortView({ onSortTypeChange: this.#handleSortTypeChange });
   }
 
   get points() {
@@ -46,7 +48,7 @@ export default class BoardPresenter {
       this.#renderSort();
       this.#renderPoints(this.points);
     } else {
-      render(new ListEmptyView(), this.#tripEvents);
+      render(this.#listEmptyComponent, this.#tripEvents);
     }
   }
 
@@ -60,6 +62,17 @@ export default class BoardPresenter {
         break;
       case UserAction.DELETE_POINT:
         this.#pointsModel.deletePoint(updateType, update);
+        if (this.#pointsModel.points.length === 0) {
+          this.#filterType = FilterType.EVERYTHING;
+          this.#filterModel.setFilter(UpdateType.MINOR, this.#filterType);
+          this.#listEmptyComponent = new ListEmptyView(this.#filterType, this.#tripEvents);
+          render(this.#listEmptyComponent, this.#tripEvents);
+          break;
+        }
+        if (this.points.length === 0) {
+          this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), this.#tripEvents);
+          render(this.#listEmptyComponent, this.#tripEvents);
+        }
         break;
     }
   };
@@ -70,12 +83,11 @@ export default class BoardPresenter {
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        remove(this.#pointListView);
+        this.#clearBoard();
         this.#renderPoints(this.points, this.#pointsModel.destinations, this.#pointsModel.offers);
-        this.#handleSortTypeChange(this.#currentSortType);
         break;
       case UpdateType.MAJOR:
-        remove(this.#pointListView);
+        this.#clearBoard();
         this.#renderPoints(this.points, this.#pointsModel.destinations, this.#pointsModel.offers);
         break;
     }
@@ -83,7 +95,7 @@ export default class BoardPresenter {
 
 
   #renderSort() {
-    render(new SortView({ onSortTypeChange: this.#handleSortTypeChange }), this.#tripEvents, RenderPosition.AFTERBEGIN);
+    render(this.#sortComponent, this.#tripEvents, RenderPosition.AFTERBEGIN);
   }
 
   #renderPoints(points) {
@@ -91,6 +103,15 @@ export default class BoardPresenter {
 
     for (const point of points) {
       this.#renderPoint(point, this.#pointsModel.destinations, this.#pointsModel.offers);
+    }
+  }
+
+  #clearBoard() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+    remove(this.#listEmptyComponent);
+    if (this.#pointsModel.points.length === 0) {
+      remove(this.#sortComponent);
     }
   }
 
@@ -118,6 +139,11 @@ export default class BoardPresenter {
     }
     this.#currentSortType = sortType;
     remove(this.#pointListView);
-    this.#renderPoints(this.points, this.#pointsModel.destinations, this.#pointsModel.offers);
+    if (this.points.length === 0) {
+      render(this.#listEmptyComponent, this.#tripEvents);
+    } else {
+      remove(this.#listEmptyComponent);
+      this.#renderPoints(this.points, this.#pointsModel.destinations, this.#pointsModel.offers);
+    }
   };
 }

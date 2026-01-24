@@ -117,7 +117,7 @@ function createNewPointTemplate(point, destinations, offers = []) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${pointId}" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}">
           </div>
           ${createButtonsTemplate()}
         </header>
