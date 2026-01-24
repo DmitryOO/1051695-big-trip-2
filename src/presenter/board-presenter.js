@@ -85,6 +85,7 @@ export default class BoardPresenter {
       case UpdateType.MINOR:
         this.#clearBoard();
         this.#renderPoints(this.points, this.#pointsModel.destinations, this.#pointsModel.offers);
+        this.#handleSortTypeChange();
         break;
       case UpdateType.MAJOR:
         this.#clearBoard();
@@ -109,6 +110,10 @@ export default class BoardPresenter {
   #clearBoard() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
+    remove(this.#sortComponent);
+    this.#sortComponent = null;
+    this.#sortComponent = new SortView({ onSortTypeChange: this.#handleSortTypeChange });
+    this.#renderSort();
     remove(this.#listEmptyComponent);
     if (this.#pointsModel.points.length === 0) {
       remove(this.#sortComponent);
@@ -133,7 +138,7 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((pointPresenter) => pointPresenter.reset());
   };
 
-  #handleSortTypeChange = (sortType) => {
+  #handleSortTypeChange = (sortType = SortType.DEFAULT) => {
     if (sortType === this.#currentSortType) {
       return;
     }
