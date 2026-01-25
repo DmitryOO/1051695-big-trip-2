@@ -98,7 +98,7 @@ function createNewPointTemplate(point, destinations, offers = []) {
             <label class="event__label  event__type-output" for="event-destination-${pointId}">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination ? pointDestination.name : ''}" list="destination-list-${pointId}">
+            <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${pointDestination ? pointDestination.name : ''}" list="destination-list-${pointId}" required>
             <datalist id="destination-list-${pointId}">
             ${destinations.map((dest) => `<option value="${dest.name}"></option>`).join('')}
             </datalist>
@@ -203,7 +203,7 @@ export default class EditPointView extends AbstractStatefulView {
         destination: newDestination.id,
       });
     } else {
-      evt.target.value = this.#destinations.find((dest) => dest.id === this._state.destination).name;
+      evt.target.value = this.#destinations.find((dest) => dest.id === this._state.destination)?.name;
     }
   };
 

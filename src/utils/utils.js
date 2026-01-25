@@ -4,12 +4,12 @@ import { MILISECONDS_IN_MINUTE, MINUTES_IN_DAY, MINUTES_IN_HOUR } from '../const
 
 const getDefaultPoint = () => ({
   basePrice: 0,
-  dateFrom: '',
-  dateTo: '',
+  dateFrom: null,
+  dateTo: null,
   destination: 0,
   isFavorite: false,
   offers: [],
-  type: 'taxi',
+  type: 'flight',
 });
 
 function getRandomArrayElement(items) {

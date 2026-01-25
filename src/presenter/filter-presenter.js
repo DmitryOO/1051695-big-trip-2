@@ -49,7 +49,7 @@ export default class FilterPresenter {
       return;
     }
 
-    this.#filterModel.setFilter(UpdateType.MINOR, filterType);
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 
   #modelEventHandler = () => {
