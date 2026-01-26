@@ -6,7 +6,7 @@ const getDefaultPoint = () => ({
   basePrice: 0,
   dateFrom: null,
   dateTo: null,
-  destination: 0,
+  destination: '',
   isFavorite: false,
   offers: [],
   type: 'flight',

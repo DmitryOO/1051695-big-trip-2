@@ -1,51 +1,51 @@
 import EditPointView from '../view/edit-point-view';
-import { render, RenderPosition, remove, replace } from '../framework/render';
+import { render, RenderPosition, remove } from '../framework/render';
 import { UserAction, UpdateType } from '../consts';
 import { getDefaultPoint } from '../utils/utils';
 
 export default class NewPointPresenter {
-  #pointComponent = null;
-  #editPointComponent = null;
+  #newPointComponent = null;
   #pointsContainer = null;
   #destinations = null;
   #offers = null;
   #handleDataChange = null;
   #onClickFormOpen = null;
-  #isOpenEdit = false;
   #newId = null;
-  constructor({ pointsContainer, onDataChange, onFormOpen, destinations, offers, newId }) {
+  #newPointButton = null;
+  #point = getDefaultPoint();
+
+  constructor({ pointsContainer, onDataChange, onFormOpen, destinations, offers, newId, newPointButton }) {
     this.#pointsContainer = pointsContainer;
     this.#handleDataChange = onDataChange;
     this.#onClickFormOpen = onFormOpen;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#newId = newId;
+    this.#newPointButton = newPointButton;
   }
 
   init() {
-
-    this.#editPointComponent = new EditPointView({
-      point: getDefaultPoint(),
+    this.#newPointComponent = new EditPointView({
+      point: this.#point,
       destinations: this.#destinations,
       offers: this.#offers,
       onFormSubmit: this.#formSubmitHandler,
-      onDeleteBtnClick: this.#onDeleteBtnClick,
+      onResetBtnClick: this.#onCancelBtnClick,
     });
 
-    render(this.#editPointComponent, this.#pointsContainer.element, RenderPosition.AFTERBEGIN);
+    render(this.#newPointComponent, this.#pointsContainer.element, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#onEscKeydown);
-
   }
 
   destroy() {
-    remove(this.#editPointComponent);
+    remove(this.#newPointComponent);
   }
 
   reset() {
-    if (this.#isOpenEdit) {
-      this.#editPointComponent.resetPoint();
-    }
+    this.#newPointButton.disabled = false;
+    remove(this.#newPointComponent);
   }
+
 
   #formSubmitHandler = (point) => {
     this.#handleDataChange(
@@ -53,21 +53,22 @@ export default class NewPointPresenter {
       UpdateType.MAJOR,
       { ...point, id: this.#newId });
     this.#onClickFormOpen();
-    // replace(this.#pointComponent, this.#editPointComponent);
+    this.#newPointButton.disabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
-    this.#isOpenEdit = false;
+
   };
 
-  #onDeleteBtnClick = () => {
-    remove(this.#editPointComponent);
+  #onCancelBtnClick = () => {
+    remove(this.#newPointComponent);
+    this.#newPointButton.disabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
   };
 
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      remove(this.#editPointComponent);
-      this.#isOpenEdit = false;
+      remove(this.#newPointComponent);
+      this.#newPointButton.disabled = false;
       document.removeEventListener('keydown', this.#onEscKeydown);
     }
   };

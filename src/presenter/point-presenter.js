@@ -26,7 +26,6 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
 
-
     this.#pointComponent = new PointView({
       point: this.#point,
       destinations: this.#destinations,
@@ -41,7 +40,7 @@ export default class PointPresenter {
       offers: this.#offers,
       onRollupBtnFormClick: this.#onRollupBtnFormClick,
       onFormSubmit: this.#formSubmitHandler,
-      onDeleteBtnClick: this.#onDeleteBtnClick,
+      onResetBtnClick: this.#onDeleteBtnClick,
     });
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
