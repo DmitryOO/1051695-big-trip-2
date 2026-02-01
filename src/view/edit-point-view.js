@@ -7,7 +7,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createNewPointTemplate(point, destinations, offers = []) {
-  const { basePrice, dateFrom, dateTo, type } = point;
+  const { basePrice, dateFrom, dateTo, type, isDisabled, isSaving, isDeleting } = point;
   const typeOffers = offers.find((offer) => offer.type === point.type)?.offers || [];
   const pointOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const pointDestination = destinations.find((dest) => point.destination === dest.id) || null;
@@ -16,12 +16,21 @@ function createNewPointTemplate(point, destinations, offers = []) {
   const createButtonsTemplate = () => {
     if (!pointId) {
       return `
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit">
+          ${isDisabled ? 'disabled' : ''}
+          ${isSaving ? 'Saving...' : 'Save'}
+        </button>
+
         <button class="event__reset-btn" type="reset">Cancel</button>`;
     }
     return `
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">
+        ${isDisabled ? 'disabled' : ''}
+        ${isSaving ? 'Saving...' : 'Save'}
+      </button>
+      <button class="event__reset-btn" type="reset"
+        ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}
+      </button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>`;
@@ -209,7 +218,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     const { checked, dataset } = evt.target;
-    const offerId = Number(dataset.offerId);
+    const offerId = dataset.offerId;
     const oldOffers = this._state.offers ?? [];
 
     let newOffers;
