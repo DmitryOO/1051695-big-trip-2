@@ -12,10 +12,6 @@ const getDefaultPoint = () => ({
   type: 'flight',
 });
 
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 function humanizeTaskDueDate(dueDate, dateFormat) {
   return dueDate ? dayjs(dueDate).format(dateFormat).toUpperCase() : '';
 }
@@ -37,4 +33,4 @@ function updatePoint(points, updatedPoint) {
 }
 
 
-export { getRandomArrayElement, humanizeTaskDueDate, getTimePeriod, getDefaultPoint, updatePoint };
+export { humanizeTaskDueDate, getTimePeriod, getDefaultPoint, updatePoint };

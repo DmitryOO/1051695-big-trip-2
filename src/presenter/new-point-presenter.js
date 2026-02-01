@@ -51,7 +51,7 @@ export default class NewPointPresenter {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      { ...point, id: this.#newId });
+      point);
     this.#onClickFormOpen();
     this.#newPointButton.disabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);

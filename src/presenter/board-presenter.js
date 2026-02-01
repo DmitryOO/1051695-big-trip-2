@@ -5,8 +5,10 @@ import PointPresenter from './point-presenter.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import { filter } from '../utils/filter-utils.js';
 import { sortByPrice, sortByTime, sortByDate } from '../utils/sort-utils.js';
-import { SortType, UserAction, UpdateType, FilterType } from '../consts.js';
+import { SortType, UserAction, UpdateType, FilterType, TimeLimit } from '../consts.js';
 import NewPointPresenter from './new-point-presenter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
 export default class BoardPresenter {
 
   #pointListView = new PointListView();
@@ -19,6 +21,11 @@ export default class BoardPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #sortComponent = null;
+  #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({ pointsContainer, pointsModel, filterModel, newPointButton }) {
     this.#filterModel = filterModel;
@@ -27,7 +34,7 @@ export default class BoardPresenter {
     this.#newPointButton = newPointButton;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), this.#tripEvents);
+    this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), this.#isLoading);
     this.#sortComponent = new SortView({ onSortTypeChange: this.#handleSortTypeChange });
     this.#newPointButton.addEventListener('click', this.#newPointButtonHandler);
   }
@@ -46,18 +53,29 @@ export default class BoardPresenter {
   }
 
   init() {
+    if (this.#isLoading) {
+      this.#newPointButton.disabled = true;
+      this.#renderEmptyLyst();
+      return;
+    }
     if (this.points.length) {
       this.#renderSort();
       this.#renderPoints(this.points);
     } else {
-      render(this.#listEmptyComponent, this.#tripEvents);
+      this.#renderEmptyLyst();
     }
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenters.get(update.id).setSaving();
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
         this.#pointsModel.addPoint(updateType, update);
@@ -65,11 +83,12 @@ export default class BoardPresenter {
       case UserAction.DELETE_POINT:
         this.#pointsModel.deletePoint(updateType, update);
         if (this.points.length === 0) {
-          this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), this.#tripEvents);
+          this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter));
           render(this.#listEmptyComponent, this.#tripEvents);
         }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -88,11 +107,16 @@ export default class BoardPresenter {
         this.#handleSortTypeChange();
         break;
       case UpdateType.INIT:
+        this.#isLoading = false;
         remove(this.#listEmptyComponent);
         this.#renderSort();
         this.#renderPoints(this.points);
     }
   };
+
+  #renderEmptyLyst() {
+    render(this.#listEmptyComponent, this.#tripEvents);
+  }
 
   #renderSort() {
     render(this.#sortComponent, this.#tripEvents, RenderPosition.AFTERBEGIN);
@@ -115,6 +139,7 @@ export default class BoardPresenter {
   }
 
   #renderPoints(points) {
+    this.#newPointButton.disabled = false;
     render(this.#pointListView, this.#tripEvents);
     for (const point of points) {
       this.#renderPoint(point, this.#pointsModel.destinations, this.#pointsModel.offers);
@@ -142,7 +167,6 @@ export default class BoardPresenter {
       pointsContainer: this.#pointListView,
       onDataChange: this.#handleViewAction,
       onFormOpen: this.#handleFormOpen,
-      newId: newId,
       newPointButton: this.#newPointButton,
     });
 

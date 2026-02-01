@@ -2,7 +2,7 @@ const MILISECONDS_IN_MINUTE = 60000;
 const MINUTES_IN_HOUR = 60;
 const MINUTES_IN_DAY = 1440;
 const API_SERVER = 'https://22.objects.htmlacademy.pro/big-trip';
-const TOKEN = 'Basic o0w590ik298812';
+const TOKEN = 'Basic o0w590ik298';
 
 const DateFormat = {
   monthDay: 'MMM D',
@@ -21,6 +21,7 @@ const EmptyMessage = {
   FUTURE: 'There are no future events now',
   PRESENT: 'There are no present events now',
   PAST: 'There are no past events now',
+  IS_LOADING: 'Loading...',
 };
 
 const FilterType = {
@@ -49,5 +50,10 @@ const UpdateType = {
   INIT: 'init'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
-export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, POINT_TYPES, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN};
+
+export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, POINT_TYPES, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit};
