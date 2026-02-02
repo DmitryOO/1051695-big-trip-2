@@ -16,16 +16,18 @@ function createNewPointTemplate(point, destinations, offers = []) {
   const createButtonsTemplate = () => {
     if (!pointId) {
       return `
-        <button class="event__save-btn  btn  btn--blue" type="submit">
-          ${isDisabled ? 'disabled' : ''}
+        <button class="event__save-btn  btn  btn--blue" type="submit"
+        ${isDisabled ? 'disabled' : ''}>
+
           ${isSaving ? 'Saving...' : 'Save'}
         </button>
 
         <button class="event__reset-btn" type="reset">Cancel</button>`;
     }
     return `
-      <button class="event__save-btn  btn  btn--blue" type="submit">
-        ${isDisabled ? 'disabled' : ''}
+      <button class="event__save-btn  btn  btn--blue" type="submit"
+       ${isDisabled ? 'disabled' : ''}>
+
         ${isSaving ? 'Saving...' : 'Save'}
       </button>
       <button class="event__reset-btn" type="reset"
@@ -312,6 +314,9 @@ export default class EditPointView extends AbstractStatefulView {
 
   static parseStateToPoint = (state) => {
     const point = { ...state };
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
     return point;
   };
 }

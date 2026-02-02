@@ -2,7 +2,7 @@ const MILISECONDS_IN_MINUTE = 60000;
 const MINUTES_IN_HOUR = 60;
 const MINUTES_IN_DAY = 1440;
 const API_SERVER = 'https://22.objects.htmlacademy.pro/big-trip';
-const TOKEN = 'Basic o0w590ik298';
+const TOKEN = 'Basic o0w590ik298345';
 
 const DateFormat = {
   monthDay: 'MMM D',

@@ -1,4 +1,3 @@
-
 import AbstractView from '../framework/view/abstract-view.js';
 import { EmptyMessage } from '../consts.js';
 
@@ -9,7 +8,7 @@ function createListEmptyTemplate(message) {
 export default class ListEmptyView extends AbstractView {
   #isLoading = false;
   #message = null;
-  constructor(filterType, isLoading) {
+  constructor(filterType, isLoading = false) {
     super();
     this.#message = EmptyMessage[filterType];
     this.#isLoading = isLoading;

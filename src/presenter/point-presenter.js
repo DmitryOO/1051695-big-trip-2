@@ -71,6 +71,40 @@ export default class PointPresenter {
     }
   }
 
+  setSaving() {
+    this.#editPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setDeleting() {
+    if (this.#isOpenEdit) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isSaving: false,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setResetting() {
+    if (!this.#isOpenEdit) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const reset = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(reset);
+  }
+
   #onEscKeydown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -100,7 +134,6 @@ export default class PointPresenter {
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       point);
-    replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#onEscKeydown);
     this.#isOpenEdit = false;
   };
