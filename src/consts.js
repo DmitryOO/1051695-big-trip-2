@@ -14,8 +14,6 @@ const DateFormat = {
 };
 
 
-const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
 const EmptyMessage = {
   EVERYTHING: 'Click New Event to create your first point',
   FUTURE: 'There are no future events now',
@@ -56,4 +54,4 @@ const TimeLimit = {
 };
 
 
-export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, POINT_TYPES, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit};
+export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit};
