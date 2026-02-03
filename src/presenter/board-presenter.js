@@ -130,10 +130,9 @@ export default class BoardPresenter {
       case UpdateType.ERROR:
         this.#isLoading = false;
         replace(this.#loadingFailComponent, this.#listEmptyComponent);
-        replace(this.#loadingFailComponent, this.#listEmptyComponent);
-        remove(this.#listEmptyComponent);
         break;
     }
+
   };
 
   #renderEmptyList() {
