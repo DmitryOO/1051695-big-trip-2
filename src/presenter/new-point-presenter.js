@@ -51,7 +51,7 @@ export default class NewPointPresenter {
     });
   }
 
-  setReseting() {
+  setResetting() {
     const resetFormState = () => {
       this.#newPointComponent.updateElement({
         isDisabled: false,

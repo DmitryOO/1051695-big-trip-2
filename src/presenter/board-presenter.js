@@ -78,7 +78,7 @@ export default class BoardPresenter {
         try {
           await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
-          this.#pointPresenters.get(update.id).setReseting();
+          this.#pointPresenters.get(update.id).setResetting();
         }
         break;
       case UserAction.ADD_POINT:
@@ -87,7 +87,7 @@ export default class BoardPresenter {
           await this.#pointsModel.addPoint(updateType, update);
           this.#newPointPresenter.destroy();
         } catch (err) {
-          this.#newPointPresenter.setReseting();
+          this.#newPointPresenter.setResetting();
         }
         break;
       case UserAction.DELETE_POINT:

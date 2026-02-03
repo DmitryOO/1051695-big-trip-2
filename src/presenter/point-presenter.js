@@ -89,7 +89,7 @@ export default class PointPresenter {
   }
 
 
-  setReseting() {
+  setResetting() {
     if (!this.#isOpenEdit) {
       this.#pointComponent.shake();
       return;
