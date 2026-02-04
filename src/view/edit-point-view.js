@@ -215,7 +215,10 @@ export default class EditPointView extends AbstractStatefulView {
         destination: newDestination.id,
       });
     } else {
-      evt.target.value = this.#destinations.find((dest) => dest.id === this._state.destination)?.name;
+      const currentDestination = this.#destinations.find(
+        (dest) => dest.id === this._state.destination
+      );
+      evt.target.value = currentDestination ? currentDestination.name : '';
     }
   };
 
