@@ -42,11 +42,11 @@ function createNewPointTemplate(point, destinations, offers = []) {
       return ('');
     }
     return `
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-          ${dest.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
-          </div>
-        </div>`;
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+        ${dest.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
+        </div>
+      </div>`;
   };
 
   const createDestinationTemplate = (dest) => {
