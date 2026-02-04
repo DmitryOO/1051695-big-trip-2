@@ -53,5 +53,12 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+const Method = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE'
+};
 
-export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit};
+
+export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit, Method};
