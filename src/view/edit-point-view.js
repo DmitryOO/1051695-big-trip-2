@@ -87,11 +87,11 @@ function createNewPointTemplate(point, destinations, offers = []) {
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-${pointId}">
+            <label class="event__type  event__type-btn" for="event-type-toggle-${pointId}">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="${type} icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-${pointId}" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
