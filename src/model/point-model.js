@@ -1,6 +1,4 @@
-// import { points } from '../mocks/points';
-// import { destinations } from '../mocks/destinations';
-// import { offers } from '../mocks/offers';
+
 import Observable from '../framework/observable';
 import { UpdateType } from '../consts';
 export default class PointModel extends Observable {
@@ -11,9 +9,6 @@ export default class PointModel extends Observable {
   constructor(pointsApiService) {
     super();
     this.#pointsApiService = pointsApiService;
-    // this.#points = points;
-    // this.#destinations = destinations;
-    // this.#offers = offers;
   }
 
 
@@ -40,15 +35,13 @@ export default class PointModel extends Observable {
       this.#points = points.map(this.#adaptToClient);
       this.#destinations = destinations;
       this.#offers = offers;
-
+      this._notify(UpdateType.INIT);
     } catch (err) {
       this.#points = [];
       this.#destinations = [];
       this.#offers = [];
-
       this._notify(UpdateType.ERROR);
     }
-    this._notify(UpdateType.INIT);
   }
 
   async updatePoint(updateType, update) {

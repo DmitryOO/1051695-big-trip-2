@@ -9,19 +9,17 @@ export default class NewPointPresenter {
   #destinations = null;
   #offers = null;
   #handleDataChange = null;
-  #onClickFormOpen = null;
-  #newId = null;
   #newPointButton = null;
   #point = getDefaultPoint();
+  #cancelHandler = null;
 
-  constructor({ pointsContainer, onDataChange, onFormOpen, destinations, offers, newId, newPointButton }) {
+  constructor({ pointsContainer, onDataChange, destinations, offers, newPointButton, cancelHandler }) {
     this.#pointsContainer = pointsContainer;
     this.#handleDataChange = onDataChange;
-    this.#onClickFormOpen = onFormOpen;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#newId = newId;
     this.#newPointButton = newPointButton;
+    this.#cancelHandler = cancelHandler;
   }
 
   init() {
@@ -46,19 +44,38 @@ export default class NewPointPresenter {
     remove(this.#newPointComponent);
   }
 
+  setSaving() {
+    this.#newPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setResetting() {
+    const resetFormState = () => {
+      this.#newPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newPointComponent.shake(resetFormState);
+  }
+
 
   #formSubmitHandler = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
       point);
-    this.#onClickFormOpen();
     this.#newPointButton.disabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
   };
 
   #onCancelBtnClick = () => {
     remove(this.#newPointComponent);
+    this.#cancelHandler();
     this.#newPointButton.disabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
   };
@@ -67,6 +84,7 @@ export default class NewPointPresenter {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       remove(this.#newPointComponent);
+      this.#cancelHandler();
       this.#newPointButton.disabled = false;
       document.removeEventListener('keydown', this.#onEscKeydown);
     }

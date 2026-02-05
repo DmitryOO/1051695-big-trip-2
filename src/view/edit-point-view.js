@@ -1,7 +1,6 @@
 
 import { humanizeTaskDueDate } from '../utils/utils.js';
 import { DateFormat } from '../consts.js';
-// import { POINT_TYPES } from '../consts.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -16,16 +15,18 @@ function createNewPointTemplate(point, destinations, offers = []) {
   const createButtonsTemplate = () => {
     if (!pointId) {
       return `
-        <button class="event__save-btn  btn  btn--blue" type="submit">
-          ${isDisabled ? 'disabled' : ''}
+        <button class="event__save-btn  btn  btn--blue" type="submit"
+        ${isDisabled ? 'disabled' : ''}>
+
           ${isSaving ? 'Saving...' : 'Save'}
         </button>
 
         <button class="event__reset-btn" type="reset">Cancel</button>`;
     }
     return `
-      <button class="event__save-btn  btn  btn--blue" type="submit">
-        ${isDisabled ? 'disabled' : ''}
+      <button class="event__save-btn  btn  btn--blue" type="submit"
+       ${isDisabled ? 'disabled' : ''}>
+
         ${isSaving ? 'Saving...' : 'Save'}
       </button>
       <button class="event__reset-btn" type="reset"
@@ -34,6 +35,18 @@ function createNewPointTemplate(point, destinations, offers = []) {
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>`;
+  };
+
+  const createPhotosContainer = (dest) => {
+    if (!dest.pictures || dest.pictures.length <= 0) {
+      return ('');
+    }
+    return `
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+        ${dest.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
+        </div>
+      </div>`;
   };
 
   const createDestinationTemplate = (dest) => {
@@ -45,11 +58,7 @@ function createNewPointTemplate(point, destinations, offers = []) {
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${dest.description}</p>
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-          ${dest.pictures?.map((pic) => `<img class="event__photo" src="${pic.src}" alt="${pic.description}">`).join('')}
-          </div>
-        </div>
+      ${createPhotosContainer(dest)}
       </section>`;
 
   };
@@ -78,11 +87,11 @@ function createNewPointTemplate(point, destinations, offers = []) {
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-${pointId}">
+            <label class="event__type  event__type-btn" for="event-type-toggle-${pointId}">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="${type} icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-${pointId}" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -92,12 +101,6 @@ function createNewPointTemplate(point, destinations, offers = []) {
                     <input id="event-type-${offer.type}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${offer.type === point.type ? 'checked' : ''}>
                     <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-${pointId}">${offer.type.charAt(0).toUpperCase() + offer.type.slice(1)}</label>
                   </div>`)).join('')}
-
-                ${/*(POINT_TYPES.map((el) => `
-                  <div class="event__type-${el}">
-                    <input id="event-type-${el}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${el}" ${el === point.type ? 'checked' : ''}>
-                    <label class="event__type-label  event__type-label--${el}" for="event-type-${el}-${pointId}" >${el.slice(0, 1).toUpperCase() + el.slice(1)}</label>
-                  </div>`)).join('')*/''}
               </fieldset>
               </fieldset>
             </div>
@@ -212,7 +215,10 @@ export default class EditPointView extends AbstractStatefulView {
         destination: newDestination.id,
       });
     } else {
-      evt.target.value = this.#destinations.find((dest) => dest.id === this._state.destination)?.name;
+      const currentDestination = this.#destinations.find(
+        (dest) => dest.id === this._state.destination
+      );
+      evt.target.value = currentDestination ? currentDestination.name : '';
     }
   };
 
@@ -312,6 +318,9 @@ export default class EditPointView extends AbstractStatefulView {
 
   static parseStateToPoint = (state) => {
     const point = { ...state };
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
     return point;
   };
 }

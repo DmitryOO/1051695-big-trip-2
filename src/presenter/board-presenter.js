@@ -1,8 +1,9 @@
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
-import { render, remove, RenderPosition } from '../framework/render.js';
+import { render, remove, replace, RenderPosition } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import ListEmptyView from '../view/list-empty-view.js';
+import LoadingFailView from '../view/loading-fail-view.js';
 import { filter } from '../utils/filter-utils.js';
 import { sortByPrice, sortByTime, sortByDate } from '../utils/sort-utils.js';
 import { SortType, UserAction, UpdateType, FilterType, TimeLimit } from '../consts.js';
@@ -10,7 +11,6 @@ import NewPointPresenter from './new-point-presenter.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class BoardPresenter {
-
   #pointListView = new PointListView();
   #tripEvents = null;
   #filterModel = null;
@@ -22,6 +22,9 @@ export default class BoardPresenter {
   #filterType = FilterType.EVERYTHING;
   #sortComponent = null;
   #isLoading = true;
+  #newPointPresenter = null;
+
+  #loadingFailComponent = new LoadingFailView();
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -34,7 +37,7 @@ export default class BoardPresenter {
     this.#newPointButton = newPointButton;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), this.#isLoading);
+    this.#listEmptyComponent = null;
     this.#sortComponent = new SortView({ onSortTypeChange: this.#handleSortTypeChange });
     this.#newPointButton.addEventListener('click', this.#newPointButtonHandler);
   }
@@ -55,14 +58,14 @@ export default class BoardPresenter {
   init() {
     if (this.#isLoading) {
       this.#newPointButton.disabled = true;
-      this.#renderEmptyLyst();
+      this.#renderLoading();
       return;
     }
     if (this.points.length) {
       this.#renderSort();
       this.#renderPoints(this.points);
     } else {
-      this.#renderEmptyLyst();
+      this.#renderEmptyList();
     }
   }
 
@@ -74,17 +77,28 @@ export default class BoardPresenter {
         try {
           await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
-          this.#pointPresenters.get(update.id).setAborting();
+          this.#pointPresenters.get(update.id).setResetting();
         }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+          this.#newPointPresenter.destroy();
+        } catch (err) {
+          this.#newPointPresenter.setResetting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, update);
-        if (this.points.length === 0) {
-          this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter));
-          render(this.#listEmptyComponent, this.#tripEvents);
+        this.#pointPresenters.get(update.id).setDeleting();
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+          if (this.points.length === 0) {
+            remove(this.#sortComponent);
+            render(this.#listEmptyComponent, this.#tripEvents);
+          }
+        } catch (err) {
+          this.#pointPresenters.get(update.id).setResetting();
         }
         break;
     }
@@ -111,10 +125,22 @@ export default class BoardPresenter {
         remove(this.#listEmptyComponent);
         this.#renderSort();
         this.#renderPoints(this.points);
+        break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        replace(this.#loadingFailComponent, this.#listEmptyComponent);
+        break;
     }
+
   };
 
-  #renderEmptyLyst() {
+  #renderEmptyList() {
+    this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter));
+    render(this.#listEmptyComponent, this.#tripEvents);
+  }
+
+  #renderLoading() {
+    this.#listEmptyComponent = new ListEmptyView((this.#filterModel.filter), true);
     render(this.#listEmptyComponent, this.#tripEvents);
   }
 
@@ -140,6 +166,11 @@ export default class BoardPresenter {
 
   #renderPoints(points) {
     this.#newPointButton.disabled = false;
+    if (!points.length) {
+      this.#renderEmptyList();
+      remove(this.#sortComponent);
+      render(this.#listEmptyComponent, this.#tripEvents);
+    }
     render(this.#pointListView, this.#tripEvents);
     for (const point of points) {
       this.#renderPoint(point, this.#pointsModel.destinations, this.#pointsModel.offers);
@@ -161,19 +192,18 @@ export default class BoardPresenter {
 
   #renderNewPoint(destinations, offers) {
     const newId = Date.now();
-    const newPointPresenter = new NewPointPresenter({
+    this.#newPointPresenter = new NewPointPresenter({
       destinations: destinations,
       offers: offers,
       pointsContainer: this.#pointListView,
       onDataChange: this.#handleViewAction,
-      onFormOpen: this.#handleFormOpen,
       newPointButton: this.#newPointButton,
+      cancelHandler: this.#handleNewPointFormClose,
     });
 
-    this.#pointPresenters.set(newId, newPointPresenter);
-    newPointPresenter.init();
+    this.#pointPresenters.set(newId, this.#newPointPresenter);
+    this.#newPointPresenter.init();
   }
-
 
   #handleFormOpen = () => {
     this.#pointPresenters.forEach((pointPresenter) => pointPresenter.reset());
@@ -199,7 +229,16 @@ export default class BoardPresenter {
     this.#changeSort();
     this.#filterType = FilterType.EVERYTHING;
     this.#filterModel.setFilter(UpdateType.MINOR, this.#filterType);
+    remove(this.#listEmptyComponent);
     this.#renderNewPoint(this.#pointsModel.destinations, this.#pointsModel.offers);
     this.#newPointButton.disabled = true;
+  };
+
+  #handleNewPointFormClose = () => {
+    this.#newPointButton.disabled = false;
+    if (this.points.length === 0) {
+      this.#pointListView.element.replaceChildren();
+      render(this.#listEmptyComponent, this.#tripEvents);
+    }
   };
 }

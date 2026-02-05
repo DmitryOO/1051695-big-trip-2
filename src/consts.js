@@ -2,7 +2,7 @@ const MILISECONDS_IN_MINUTE = 60000;
 const MINUTES_IN_HOUR = 60;
 const MINUTES_IN_DAY = 1440;
 const API_SERVER = 'https://22.objects.htmlacademy.pro/big-trip';
-const TOKEN = 'Basic o0w590ik298';
+const TOKEN = 'Basic o0w590ik298345';
 
 const DateFormat = {
   monthDay: 'MMM D',
@@ -13,8 +13,6 @@ const DateFormat = {
 
 };
 
-
-const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const EmptyMessage = {
   EVERYTHING: 'Click New Event to create your first point',
@@ -55,5 +53,12 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+const Method = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE'
+};
 
-export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, POINT_TYPES, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit};
+
+export {MILISECONDS_IN_MINUTE, MINUTES_IN_HOUR, MINUTES_IN_DAY, DateFormat, EmptyMessage, SortType, FilterType, UserAction, UpdateType, API_SERVER, TOKEN, TimeLimit, Method};
